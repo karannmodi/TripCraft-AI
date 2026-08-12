@@ -93,7 +93,7 @@ export const AskMyTripView: React.FC<AskMyTripViewProps> = ({ trip }) => {
           </h3>
         </div>
         <p style={{ margin: '0.2rem 0 0 0', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-          Context-aware AI assistant with zero factual hallucination — backed by PostgreSQL data & local Ollama model.
+          Fact-first AI assistant designed to reduce hallucination risk using PostgreSQL data and a local Ollama model.
         </p>
       </div>
 
