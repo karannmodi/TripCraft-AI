@@ -15,7 +15,7 @@ export const Header: React.FC = () => {
       </div>
       <nav className="nav-links" aria-label="Main Navigation">
         <span className="badge badge-success" style={{ gap: '0.4rem' }}>
-          <Sparkles size={14} /> Phase 1 Foundation
+          <Sparkles size={14} /> TripCraft AI MVP
         </span>
       </nav>
     </header>

@@ -45,8 +45,8 @@ export const App: React.FC = () => {
                 React 18 frontend communicating with FastAPI, PostgreSQL (NUMERIC 10,2 exact currency precision), and local Ollama (Gemma 3 1B).
               </p>
             </div>
-            <button 
-              onClick={checkConnectivity} 
+            <button
+              onClick={checkConnectivity}
               className="btn-primary"
               aria-label="Refresh Backend System Health Status"
               style={{ fontSize: '0.85rem', padding: '0.5rem 1rem' }}
@@ -59,9 +59,9 @@ export const App: React.FC = () => {
             {loading && <LoadingSpinner label="Pinging FastAPI backend health endpoint..." />}
 
             {error && (
-              <ErrorAlert 
-                title="Backend Connection Status" 
-                message={`Could not establish connection with FastAPI backend at ${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}. Make sure the backend server is running.`} 
+              <ErrorAlert
+                title="Backend Connection Status"
+                message={`Could not establish connection with FastAPI backend at ${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}. Make sure the backend server is running.`}
               />
             )}
 
@@ -100,7 +100,7 @@ export const App: React.FC = () => {
                     <ShieldCheck size={18} />
                     <strong style={{ color: 'var(--text-main)', fontSize: '0.9rem' }}>MVP Readiness</strong>
                   </div>
-                  <span className="badge badge-success" style={{ fontSize: '0.75rem' }}>ASSIGNMENT 5.3 COMPLETE</span>
+                  <span className="badge badge-success" style={{ fontSize: '0.75rem' }}>FULL-STACK MVP READY</span>
                 </div>
               </div>
             )}
