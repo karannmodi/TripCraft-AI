@@ -34,15 +34,15 @@ export const App: React.FC = () => {
       <Header />
 
       <main role="main">
-        {/* Phase 1 Connectivity Widget */}
+        {/* System Architecture & Health Widget */}
         <section className="card" style={{ marginBottom: '1.5rem' }} aria-labelledby="foundation-heading">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
             <div>
               <h2 id="foundation-heading" style={{ fontSize: '1.5rem', marginBottom: '0.25rem' }}>
-                Phase 1 &amp; Phase 2 — System Architecture
+                TripCraft AI — System Architecture &amp; Health
               </h2>
-              <p style={{ color: 'var(--text-muted)', maxWidth: '700px', margin: 0, fontSize: '0.9rem' }}>
-                TripCraft AI React 18 frontend communicating with FastAPI &amp; PostgreSQL (NUMERIC 10,2 Decimal exact currency precision).
+              <p style={{ color: 'var(--text-muted)', maxWidth: '750px', margin: 0, fontSize: '0.9rem' }}>
+                React 18 frontend communicating with FastAPI, PostgreSQL (NUMERIC 10,2 exact currency precision), and local Ollama (Gemma 3 1B).
               </p>
             </div>
             <button 
@@ -51,7 +51,7 @@ export const App: React.FC = () => {
               aria-label="Refresh Backend System Health Status"
               style={{ fontSize: '0.85rem', padding: '0.5rem 1rem' }}
             >
-              Check Backend Health
+              Check System Health
             </button>
           </div>
 
@@ -86,19 +86,21 @@ export const App: React.FC = () => {
                 </div>
 
                 <div className="card" style={{ background: 'rgba(15, 23, 42, 0.6)', padding: '1rem' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem', color: 'var(--accent-emerald)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem', color: '#a855f7' }}>
                     <Cpu size={18} />
-                    <strong style={{ color: 'var(--text-main)', fontSize: '0.9rem' }}>AI Architecture</strong>
+                    <strong style={{ color: 'var(--text-main)', fontSize: '0.9rem' }}>Local AI Model</strong>
                   </div>
-                  <span className="badge badge-success" style={{ fontSize: '0.75rem' }}>DECOUPLED INTERFACE</span>
+                  <span className="badge badge-success" style={{ fontSize: '0.75rem', background: 'rgba(168, 85, 247, 0.2)', color: '#c084fc', border: '1px solid rgba(168, 85, 247, 0.3)' }}>
+                    OLLAMA / GEMMA 3 1B
+                  </span>
                 </div>
 
                 <div className="card" style={{ background: 'rgba(15, 23, 42, 0.6)', padding: '1rem' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem', color: 'var(--accent-amber)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem', color: 'var(--accent-emerald)' }}>
                     <ShieldCheck size={18} />
-                    <strong style={{ color: 'var(--text-main)', fontSize: '0.9rem' }}>Phase 2 CRUD</strong>
+                    <strong style={{ color: 'var(--text-main)', fontSize: '0.9rem' }}>MVP Readiness</strong>
                   </div>
-                  <span className="badge badge-success" style={{ fontSize: '0.75rem' }}>POSTGRES PERSISTENT</span>
+                  <span className="badge badge-success" style={{ fontSize: '0.75rem' }}>ASSIGNMENT 5.3 COMPLETE</span>
                 </div>
               </div>
             )}
@@ -111,4 +113,3 @@ export const App: React.FC = () => {
     </div>
   );
 };
-

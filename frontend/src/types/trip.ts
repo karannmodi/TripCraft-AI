@@ -80,14 +80,14 @@ export interface ItineraryActivityUpdateInput {
 export interface Reservation {
   id: string;
   trip_id: string;
-  type: string; // Lodging, Transportation, Restaurant, Activity
+  type: string;
   title: string;
   provider?: string | null;
   confirmation_code?: string | null;
   start_time?: string | null;
   end_time?: string | null;
   cost: string;
-  status: string; // Confirmed, Pending, Cancelled
+  status: string;
   notes?: string | null;
   created_at?: string;
   updated_at?: string;
@@ -120,7 +120,7 @@ export interface ReservationUpdateInput {
 export interface Expense {
   id: string;
   trip_id: string;
-  category: string; // Lodging, Transportation, Food, Activities, Shopping, Other
+  category: string;
   description: string;
   estimated_amount: string;
   actual_amount: string;
@@ -164,4 +164,37 @@ export interface BudgetSummary {
   actual_budget_remaining: string;
   category_breakdowns: CategoryBudgetBreakdown[];
   expenses: Expense[];
+}
+
+export interface PackingItem {
+  id: string;
+  trip_id: string;
+  category: string;
+  item_name: string;
+  is_packed: boolean;
+  is_ai_suggested: boolean;
+}
+
+export interface PackingItemCreateInput {
+  category: string;
+  item_name: string;
+  is_packed?: boolean;
+}
+
+export interface PackingItemUpdateInput {
+  category?: string;
+  item_name?: string;
+  is_packed?: boolean;
+}
+
+export interface ChatMessage {
+  id: string;
+  trip_id: string;
+  sender: 'user' | 'assistant';
+  message: string;
+  timestamp: string;
+}
+
+export interface ChatHistoryResponse {
+  messages: ChatMessage[];
 }

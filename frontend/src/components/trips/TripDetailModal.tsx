@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Trip } from '../../types/trip';
-import { X, MapPin, Calendar, Users, DollarSign, Navigation, ListChecks, Hotel, Wallet, Info } from 'lucide-react';
+import { X, MapPin, Calendar, Users, DollarSign, Navigation, ListChecks, Hotel, Wallet, Info, Package, MessageSquareText } from 'lucide-react';
 import { ItineraryView } from './ItineraryView';
 import { ReservationsView } from './ReservationsView';
 import { BudgetView } from './BudgetView';
+import { PackingView } from './PackingView';
+import { AskMyTripView } from './AskMyTripView';
 
 interface TripDetailModalProps {
   trip: Trip | null;
@@ -12,7 +14,7 @@ interface TripDetailModalProps {
   onEdit: (trip: Trip) => void;
 }
 
-type TabType = 'details' | 'itinerary' | 'reservations' | 'budget';
+type TabType = 'details' | 'itinerary' | 'reservations' | 'budget' | 'packing' | 'chat';
 
 export const TripDetailModal: React.FC<TripDetailModalProps> = ({ trip, isOpen, onClose, onEdit }) => {
   const [activeTab, setActiveTab] = useState<TabType>('details');
@@ -58,7 +60,7 @@ export const TripDetailModal: React.FC<TripDetailModalProps> = ({ trip, isOpen, 
         className="card" 
         style={{
           width: '100%',
-          maxWidth: '900px',
+          maxWidth: '950px',
           maxHeight: '90vh',
           overflowY: 'auto',
           border: '1px solid rgba(255, 255, 255, 0.12)',
@@ -70,7 +72,7 @@ export const TripDetailModal: React.FC<TripDetailModalProps> = ({ trip, isOpen, 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem', borderBottom: '1px solid rgba(255, 255, 255, 0.1)', paddingBottom: '1rem' }}>
           <div>
             <span className="badge badge-success" style={{ marginBottom: '0.4rem', display: 'inline-block' }}>
-              TripCraft Management Workspace
+              TripCraft Workspace
             </span>
             <h2 id="trip-detail-title" style={{ fontSize: '1.75rem', fontWeight: 800, margin: '0.2rem 0 0.4rem 0', color: 'var(--text-main)' }}>
               {trip.title}
@@ -89,11 +91,11 @@ export const TripDetailModal: React.FC<TripDetailModalProps> = ({ trip, isOpen, 
           </button>
         </div>
 
-        {/* Navigation Tabs */}
+        {/* Navigation Tabs (6 Tabs) */}
         <div 
           style={{ 
             display: 'flex', 
-            gap: '0.5rem', 
+            gap: '0.25rem', 
             borderBottom: '1px solid rgba(255, 255, 255, 0.1)', 
             marginBottom: '1.25rem',
             overflowX: 'auto'
@@ -102,77 +104,121 @@ export const TripDetailModal: React.FC<TripDetailModalProps> = ({ trip, isOpen, 
           <button
             onClick={() => setActiveTab('details')}
             style={{
-              padding: '0.65rem 1.25rem',
+              padding: '0.65rem 1rem',
               background: 'none',
               border: 'none',
               borderBottom: activeTab === 'details' ? '2px solid var(--accent-cyan)' : '2px solid transparent',
               color: activeTab === 'details' ? 'var(--accent-cyan)' : 'var(--text-muted)',
               fontWeight: 600,
-              fontSize: '0.9rem',
+              fontSize: '0.85rem',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: '0.4rem'
+              gap: '0.4rem',
+              whiteSpace: 'nowrap'
             }}
           >
-            <Info size={16} /> Trip Details
+            <Info size={15} /> Trip Details
           </button>
 
           <button
             onClick={() => setActiveTab('itinerary')}
             style={{
-              padding: '0.65rem 1.25rem',
+              padding: '0.65rem 1rem',
               background: 'none',
               border: 'none',
               borderBottom: activeTab === 'itinerary' ? '2px solid var(--primary)' : '2px solid transparent',
               color: activeTab === 'itinerary' ? 'var(--primary)' : 'var(--text-muted)',
               fontWeight: 600,
-              fontSize: '0.9rem',
+              fontSize: '0.85rem',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: '0.4rem'
+              gap: '0.4rem',
+              whiteSpace: 'nowrap'
             }}
           >
-            <ListChecks size={16} /> Itinerary
+            <ListChecks size={15} /> Itinerary
           </button>
 
           <button
             onClick={() => setActiveTab('reservations')}
             style={{
-              padding: '0.65rem 1.25rem',
+              padding: '0.65rem 1rem',
               background: 'none',
               border: 'none',
               borderBottom: activeTab === 'reservations' ? '2px solid #38bdf8' : '2px solid transparent',
               color: activeTab === 'reservations' ? '#38bdf8' : 'var(--text-muted)',
               fontWeight: 600,
-              fontSize: '0.9rem',
+              fontSize: '0.85rem',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: '0.4rem'
+              gap: '0.4rem',
+              whiteSpace: 'nowrap'
             }}
           >
-            <Hotel size={16} /> Reservations
+            <Hotel size={15} /> Reservations
           </button>
 
           <button
             onClick={() => setActiveTab('budget')}
             style={{
-              padding: '0.65rem 1.25rem',
+              padding: '0.65rem 1rem',
               background: 'none',
               border: 'none',
               borderBottom: activeTab === 'budget' ? '2px solid var(--accent-amber)' : '2px solid transparent',
               color: activeTab === 'budget' ? 'var(--accent-amber)' : 'var(--text-muted)',
               fontWeight: 600,
-              fontSize: '0.9rem',
+              fontSize: '0.85rem',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: '0.4rem'
+              gap: '0.4rem',
+              whiteSpace: 'nowrap'
             }}
           >
-            <Wallet size={16} /> Budget Tracker
+            <Wallet size={15} /> Budget Tracker
+          </button>
+
+          <button
+            onClick={() => setActiveTab('packing')}
+            style={{
+              padding: '0.65rem 1rem',
+              background: 'none',
+              border: 'none',
+              borderBottom: activeTab === 'packing' ? '2px solid #34d399' : '2px solid transparent',
+              color: activeTab === 'packing' ? '#34d399' : 'var(--text-muted)',
+              fontWeight: 600,
+              fontSize: '0.85rem',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+              whiteSpace: 'nowrap'
+            }}
+          >
+            <Package size={15} /> Packing
+          </button>
+
+          <button
+            onClick={() => setActiveTab('chat')}
+            style={{
+              padding: '0.65rem 1rem',
+              background: 'none',
+              border: 'none',
+              borderBottom: activeTab === 'chat' ? '2px solid #c084fc' : '2px solid transparent',
+              color: activeTab === 'chat' ? '#c084fc' : 'var(--text-muted)',
+              fontWeight: 600,
+              fontSize: '0.85rem',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+              whiteSpace: 'nowrap'
+            }}
+          >
+            <MessageSquareText size={15} /> Ask My Trip
           </button>
         </div>
 
@@ -267,6 +313,16 @@ export const TripDetailModal: React.FC<TripDetailModalProps> = ({ trip, isOpen, 
         {/* Tab 4: Budget Tracker */}
         {activeTab === 'budget' && (
           <BudgetView trip={trip} />
+        )}
+
+        {/* Tab 5: Packing Assistant */}
+        {activeTab === 'packing' && (
+          <PackingView trip={trip} />
+        )}
+
+        {/* Tab 6: Ask My Trip Assistant */}
+        {activeTab === 'chat' && (
+          <AskMyTripView trip={trip} />
         )}
 
         {/* Action Buttons */}
