@@ -1,0 +1,28 @@
+# Environment variables (SECURITY - DO NOT COMMIT)
+.env
+.env.local
+.env.*.local
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+ENV/
+*.sqlite3
+*.db
+
+# Node / React / Vite
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# IDEs & System
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
