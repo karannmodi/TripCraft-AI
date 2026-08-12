@@ -14,6 +14,10 @@ class Settings(BaseSettings):
     # PostgreSQL Database URL
     DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/tripcraft_db"
 
+    # Ollama AI Configuration
+    OLLAMA_BASE_URL: str = "http://localhost:11434"
+    OLLAMA_MODEL: str = "gemma3:1b"
+
     # CORS origins
     CORS_ORIGINS: Union[str, List[str]] = [
         "http://localhost:5173",

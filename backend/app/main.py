@@ -58,19 +58,24 @@ async def root_health():
 # Single-Service Production Static Asset Serving Readiness (for AWS App Runner)
 frontend_dist_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../frontend/dist"))
 
+from fastapi import FastAPI, HTTPException
+
 if os.path.exists(frontend_dist_path) and os.path.isdir(frontend_dist_path):
     logger.info(f"Mounting production frontend build from {frontend_dist_path}")
-    app.mount("/assets", StaticFiles(directory=os.path.join(frontend_dist_path, "assets")), name="assets")
+    assets_dir = os.path.join(frontend_dist_path, "assets")
+    if os.path.exists(assets_dir):
+        app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
 
     @app.get("/{full_path:path}")
     async def serve_spa(full_path: str):
-        # Allow API routes to take precedence
-        if full_path.startswith("api/") or full_path == "health":
-            return {"error": "Not Found"}
+        # Allow API routes to pass through to FastAPI 404 handler
+        if full_path.startswith("api/") or full_path.startswith("health"):
+            raise HTTPException(status_code=404, detail="API route not found")
         index_file = os.path.join(frontend_dist_path, "index.html")
         if os.path.exists(index_file):
             return FileResponse(index_file)
-        return {"error": "Frontend build index.html not found"}
+        raise HTTPException(status_code=404, detail="Frontend index.html not found")
+
 
 if __name__ == "__main__":
     import uvicorn

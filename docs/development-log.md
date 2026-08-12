@@ -58,3 +58,73 @@
   - Non-destructive read-only verification of existing database schemas and environment states prevents unnecessary data loss and confirms full-stack readiness before introducing complex feature development.
 - **Time Spent**: ~0.5 hours
 
+### Entry 3: Phase 2 — Trip Creation & Dashboard
+- **Date/Time**: 2026-08-11
+- **Stage**: Phase 2 — Trip Creation & Dashboard
+- **Prompts / Directives**:
+  - Implement full-stack Trip CRUD operations (`POST`, `GET`, `GET /{id}`, `PUT /{id}`, `DELETE /{id}`) using React 18 $\rightarrow$ FastAPI $\rightarrow$ PostgreSQL architecture.
+  - Enforce field validation: title/destination non-blank, `end_date` $\ge$ `start_date`, travelers $\ge 1$, budget $\ge 0$, and non-existent IDs returning 404.
+  - Preserve exact Decimal precision across API contract via consistent string serialization/parsing between FastAPI and TypeScript.
+  - Build responsive, accessible React Trip Dashboard with search/filter, loading states, success/error toasts, detail view modal, and delete confirmation dialog.
+  - Create and persist realistic test trip ("Chicago Weekend", Sept 18–21, 2026, 2 travelers, $1,800.00 budget) via FastAPI API.
+  - Maintain clean 6-layer architecture and omit AI, itinerary generation, reservations, expenses, packing, chat, auth, Docker, or AWS work.
+- **Changes Implemented**:
+  - **Backend**:
+    - Created `backend/app/services/trip_service.py` implementing async SQLAlchemy 2.0 CRUD methods.
+    - Created `backend/app/api/v1/trips.py` router with endpoints for `POST`, `GET`, `GET /{id}`, `PUT /{id}`, and `DELETE /{id}` with strict HTTP status codes (`201`, `200`, `204`, `404`, `422`).
+    - Updated `backend/app/schemas/trip.py` with `@field_validator` and `@model_validator` for date range and non-blank title/destination, and `@field_serializer` for exact string Decimal serialization (`"1800.00"`).
+    - Updated `backend/app/api/v1/router.py` to mount `/trips` router.
+    - Updated `backend/app/main.py` SPA fallback handler to ensure API endpoints pass through to FastAPI handlers without method interception.
+  - **Frontend**:
+    - Updated `frontend/src/types/trip.ts` with `TripCreateInput`, `TripUpdateInput`, and string Decimal types.
+    - Updated `frontend/src/api/client.ts` with `fetchTrips`, `fetchTripById`, `createTrip`, `updateTrip`, and `deleteTrip` API wrappers.
+    - Built accessible components: `TripCard.tsx`, `TripFormModal.tsx`, `TripDetailModal.tsx`, `DeleteConfirmModal.tsx`, and `TripDashboard.tsx`.
+    - Integrated `TripDashboard` into `frontend/src/App.tsx`.
+- **Challenges / Errors & Solutions**:
+  - *Challenge*: Avoiding floating-point precision loss when transmitting Decimal monetary figures across FastAPI and TypeScript.
+  - *Solution*: Configured Pydantic v2 `@field_serializer` to format `Decimal` as exact 2-decimal strings (`"1800.00"`) across HTTP responses and parsed input strings in TypeScript.
+  - *Challenge*: SPA catch-all route intercepting `POST /api/v1/trips` with 405 Method Not Allowed when `frontend/dist` existed.
+  - *Solution*: Updated SPA fallback route handler in `main.py` to raise 404 for `/api/*` routes, allowing FastAPI routing table to handle method matching.
+- **Lessons Learned**:
+  - Combining strict Pydantic model validation with string Decimal serialization guarantees financial data integrity without relying on binary floating-point representation in modern full-stack web applications.
+- **Time Spent**: ~1.5 hours
+
+### Entry 4: Phase 3 — Local AI Itinerary Generation (Ollama)
+- **Date/Time**: 2026-08-11
+- **Stage**: Phase 3 — Local AI Itinerary Generation (Ollama)
+- **Prompts / Directives**:
+  - Implement local AI integration using `gemma3:1b` via local Ollama service (`http://localhost:11434`, model path `D:\ollama\models`).
+  - Enforce approved Phase 3 architecture: React $\rightarrow$ FastAPI $\rightarrow$ PostgreSQL $\rightarrow$ OllamaAIService $\rightarrow$ gemma3:1b $\rightarrow$ structured JSON $\rightarrow$ Pydantic validation $\rightarrow$ PostgreSQL $\rightarrow$ React.
+  - Implement reliable day-by-day generation strategy: calculate all trip dates using application logic, prompt Ollama for each specific date, validate each day with Pydantic (`AIItineraryDay` with $\ge 2$ activities per day), allow 1 controlled retry per day, and perform strict application-level completeness checks across all required trip dates.
+  - Enforce atomic database persistence: perform AI generation and completeness verification FIRST before mutating PostgreSQL, ensuring old itineraries are never overwritten by incomplete/failed generations.
+  - Ensure clear HTTP 503 Service Unavailable error returned if Ollama is offline (no silent mock fallback).
+  - Preserve exact Decimal currency handling (`Numeric(10,2)` in PostgreSQL & string Decimal serialization).
+  - Implement full-stack itinerary features: generate AI itinerary, retrieve itinerary, day-by-day display, editable activities, activity deletion, regeneration with overwrite confirmation, and PostgreSQL persistence.
+  - Use Chicago Weekend trip for final verification.
+- **Changes Implemented**:
+  - **Backend**:
+    - Configured `OLLAMA_BASE_URL` and `OLLAMA_MODEL` in `config.py`, `.env`, and `.env.example`.
+    - Updated `backend/app/services/ollama_service.py` with day-by-day generation (`generate_day_itinerary`), Pydantic validation (`AIItineraryDay` requiring `min_length=2` activities), 1 controlled retry per day, and application-level completeness checks (`_verify_completeness`).
+    - Updated `backend/app/services/itinerary_service.py` to enforce safe atomic persistence (AI generation and validation complete 100% before deleting/inserting records in PostgreSQL).
+    - Created `backend/app/api/v1/itinerary.py` with `GET /trips/{id}/itinerary`, `POST /trips/{id}/itinerary/generate`, `PUT /trips/{id}/itinerary/activities/{id}`, and `DELETE /trips/{id}/itinerary/activities/{id}` endpoints.
+    - Updated `backend/app/schemas/itinerary.py` with `AIItineraryDay` (at least 2 activities required, resilient string/list note validators), `AIItineraryActivity` (non-negative cost validation), and cost serializers (`"25.00"`).
+    - Mounted itinerary router into FastAPI `api_router` in `backend/app/api/v1/router.py`.
+  - **Frontend**:
+    - Updated `frontend/src/types/trip.ts` with `ItineraryDay`, `ItineraryActivity`, and `ItineraryActivityUpdateInput` interfaces.
+    - Updated `frontend/src/api/client.ts` with `fetchItinerary`, `generateItinerary`, `updateActivity`, and `deleteActivity` API wrappers.
+    - Created `ItineraryView.tsx` and `ActivityEditModal.tsx` React components for day-by-day display, loading state, error alert, overwrite confirmation modal, activity edit modal, and deletion.
+    - Integrated `ItineraryView` into `TripDetailModal.tsx`.
+- **Challenges / Errors & Solutions**:
+  - *Challenge 1 (Ollama Installer / System Path & Storage)*: Ollama installer on Windows defaulted to user directory on C drive, but target model storage was specified as `D:\ollama\models`.
+  - *Solution*: Configured system environment variable `OLLAMA_MODELS=D:\ollama\models`, ensured `ollama.exe` was on system `PATH`, verified local Ollama server running on port 11434, pulled `gemma3:1b` model (815MB), and confirmed blob storage in `D:\ollama\models\manifests` and `D:\ollama\models\blobs`.
+  - *Challenge 2 (Multi-Day Generation Truncation on 1B Model)*: Asking `gemma3:1b` to generate a full 4-day itinerary in a single prompt led to incomplete output where Day 1 had activities while Days 2–4 were empty or truncated.
+  - *Solution*: Refactored generation to calculate all required trip dates in FastAPI application logic and prompt Ollama for one day at a time. Each day request is fast, focused, validated against `AIItineraryDay` ($\ge 2$ activities), and retried once if malformed.
+  - *Challenge 3 (Safe Transactional Persistence)*: Deleting old itinerary records before AI generation finishes risks leaving the database empty or partially populated if generation fails halfway.
+  - *Solution*: Reordered service logic so all days are generated, validated, and checked for completeness FIRST. PostgreSQL deletion and insertion take place atomically inside a single commit transaction.
+- **Lessons Learned**:
+  - Decomposing multi-day LLM tasks into single-day structured prompts dramatically improves response quality and eliminates empty days for small 1B parameter models, while strict Pydantic validation combined with atomic DB persistence guarantees data completeness and database integrity.
+- **Time Spent**: ~2.5 hours
+
+
+
+

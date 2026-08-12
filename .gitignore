@@ -26,3 +26,11 @@ dist-ssr/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Test logs & Scratch scripts
+*.log
+*.txt
+backend/scratch_*
+backend/run_phase3_test.py
+backend/test_*.py
+

@@ -1,7 +1,7 @@
 from datetime import date, datetime
 from decimal import Decimal
 from typing import List, Optional
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict, field_validator, model_validator, field_serializer
 
 
 class TripBase(BaseModel):
@@ -14,6 +14,19 @@ class TripBase(BaseModel):
     interests: List[str] = Field(default_factory=list, description="Traveler interest tags")
     travel_pace: str = Field("Moderate", description="Pace preference (Slow, Moderate, Fast)")
     transportation_preference: str = Field("Public Transit", description="Preferred transport mode")
+
+    @field_validator("title", "destination", mode="after")
+    @classmethod
+    def validate_not_blank(cls, v: str) -> str:
+        if not v or not v.strip():
+            raise ValueError("Field cannot be blank or whitespace-only")
+        return v.strip()
+
+    @model_validator(mode="after")
+    def validate_date_range(self) -> "TripBase":
+        if self.start_date and self.end_date and self.end_date < self.start_date:
+            raise ValueError("End date cannot occur before start date")
+        return self
 
 
 class TripCreate(TripBase):
@@ -31,10 +44,32 @@ class TripUpdate(BaseModel):
     travel_pace: Optional[str] = None
     transportation_preference: Optional[str] = None
 
+    @field_validator("title", "destination", mode="after")
+    @classmethod
+    def validate_not_blank_optional(cls, v: Optional[str]) -> Optional[str]:
+        if v is not None:
+            if not v.strip():
+                raise ValueError("Field cannot be blank or whitespace-only")
+            return v.strip()
+        return v
+
+    @model_validator(mode="after")
+    def validate_update_date_range(self) -> "TripUpdate":
+        if self.start_date and self.end_date and self.end_date < self.start_date:
+            raise ValueError("End date cannot occur before start date")
+        return self
+
 
 class TripResponse(TripBase):
     id: str
     created_at: datetime
     updated_at: datetime
 
+    @field_serializer("budget_estimated", mode="plain", check_fields=False)
+    def serialize_decimal(self, v: Optional[Decimal], _info) -> Optional[str]:
+        if v is None:
+            return None
+        return f"{v:.2f}"
+
     model_config = ConfigDict(from_attributes=True)
+

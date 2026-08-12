@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Header } from './components/common/Header';
 import { LoadingSpinner } from './components/common/LoadingSpinner';
 import { ErrorAlert } from './components/common/ErrorAlert';
+import { TripDashboard } from './components/trips/TripDashboard';
 import { fetchHealth } from './api/client';
 import { HealthResponse } from './types/trip';
 import { Database, Server, ShieldCheck, Cpu } from 'lucide-react';
@@ -33,26 +34,28 @@ export const App: React.FC = () => {
       <Header />
 
       <main role="main">
-        <section className="card" style={{ marginBottom: '2rem' }} aria-labelledby="foundation-heading">
+        {/* Phase 1 Connectivity Widget */}
+        <section className="card" style={{ marginBottom: '1.5rem' }} aria-labelledby="foundation-heading">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
             <div>
-              <h2 id="foundation-heading" style={{ fontSize: '1.75rem', marginBottom: '0.5rem' }}>
-                Phase 1 — Foundation & Connectivity Verification
+              <h2 id="foundation-heading" style={{ fontSize: '1.5rem', marginBottom: '0.25rem' }}>
+                Phase 1 &amp; Phase 2 — System Architecture
               </h2>
-              <p style={{ color: 'var(--text-muted)', maxWidth: '700px' }}>
-                TripCraft AI application skeleton initialized with React 18, Vite, TypeScript, and FastAPI backend with PostgreSQL NUMERIC(10,2) Decimal precision database models.
+              <p style={{ color: 'var(--text-muted)', maxWidth: '700px', margin: 0, fontSize: '0.9rem' }}>
+                TripCraft AI React 18 frontend communicating with FastAPI &amp; PostgreSQL (NUMERIC 10,2 Decimal exact currency precision).
               </p>
             </div>
             <button 
               onClick={checkConnectivity} 
               className="btn-primary"
               aria-label="Refresh Backend System Health Status"
+              style={{ fontSize: '0.85rem', padding: '0.5rem 1rem' }}
             >
               Check Backend Health
             </button>
           </div>
 
-          <div style={{ marginTop: '2rem' }}>
+          <div>
             {loading && <LoadingSpinner label="Pinging FastAPI backend health endpoint..." />}
 
             {error && (
@@ -63,85 +66,49 @@ export const App: React.FC = () => {
             )}
 
             {health && (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.25rem', marginTop: '1.25rem' }}>
-                <div className="card" style={{ background: 'rgba(15, 23, 42, 0.6)', padding: '1.25rem' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem', color: 'var(--primary)' }}>
-                    <Server size={20} />
-                    <strong style={{ color: 'var(--text-main)' }}>FastAPI Status</strong>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginTop: '1rem' }}>
+                <div className="card" style={{ background: 'rgba(15, 23, 42, 0.6)', padding: '1rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem', color: 'var(--primary)' }}>
+                    <Server size={18} />
+                    <strong style={{ color: 'var(--text-main)', fontSize: '0.9rem' }}>FastAPI Status</strong>
                   </div>
-                  <span className="badge badge-success">{health.status.toUpperCase()}</span>
-                  <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-                    App: {health.app_name} ({health.environment})
-                  </p>
+                  <span className="badge badge-success" style={{ fontSize: '0.75rem' }}>{health.status.toUpperCase()}</span>
                 </div>
 
-                <div className="card" style={{ background: 'rgba(15, 23, 42, 0.6)', padding: '1.25rem' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem', color: 'var(--accent-cyan)' }}>
-                    <Database size={20} />
-                    <strong style={{ color: 'var(--text-main)' }}>PostgreSQL Engine</strong>
+                <div className="card" style={{ background: 'rgba(15, 23, 42, 0.6)', padding: '1rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem', color: 'var(--accent-cyan)' }}>
+                    <Database size={18} />
+                    <strong style={{ color: 'var(--text-main)', fontSize: '0.9rem' }}>PostgreSQL Engine</strong>
                   </div>
-                  <span className={`badge ${health.database_status === 'connected' ? 'badge-success' : 'badge-error'}`}>
+                  <span className={`badge ${health.database_status === 'connected' ? 'badge-success' : 'badge-error'}`} style={{ fontSize: '0.75rem' }}>
                     {health.database_status ? health.database_status.toUpperCase() : 'UNKNOWN'}
                   </span>
-                  <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-                    Driver: {health.database_engine || 'postgresql+asyncpg'}
-                  </p>
                 </div>
 
-                <div className="card" style={{ background: 'rgba(15, 23, 42, 0.6)', padding: '1.25rem' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem', color: 'var(--accent-emerald)' }}>
-                    <Cpu size={20} />
-                    <strong style={{ color: 'var(--text-main)' }}>AI Architecture</strong>
+                <div className="card" style={{ background: 'rgba(15, 23, 42, 0.6)', padding: '1rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem', color: 'var(--accent-emerald)' }}>
+                    <Cpu size={18} />
+                    <strong style={{ color: 'var(--text-main)', fontSize: '0.9rem' }}>AI Architecture</strong>
                   </div>
-                  <span className="badge badge-success">DECOUPLED INTERFACE</span>
-                  <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-                    BaseAIService abstract interface ready
-                  </p>
+                  <span className="badge badge-success" style={{ fontSize: '0.75rem' }}>DECOUPLED INTERFACE</span>
                 </div>
 
-                <div className="card" style={{ background: 'rgba(15, 23, 42, 0.6)', padding: '1.25rem' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem', color: 'var(--accent-amber)' }}>
-                    <ShieldCheck size={20} />
-                    <strong style={{ color: 'var(--text-main)' }}>AWS Deployment</strong>
+                <div className="card" style={{ background: 'rgba(15, 23, 42, 0.6)', padding: '1rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem', color: 'var(--accent-amber)' }}>
+                    <ShieldCheck size={18} />
+                    <strong style={{ color: 'var(--text-main)', fontSize: '0.9rem' }}>Phase 2 CRUD</strong>
                   </div>
-                  <span className="badge badge-success">SINGLE SERVICE READY</span>
-                  <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-                    App Runner SPA static mount ready
-                  </p>
+                  <span className="badge badge-success" style={{ fontSize: '0.75rem' }}>POSTGRES PERSISTENT</span>
                 </div>
               </div>
             )}
           </div>
         </section>
 
-        <section className="card" aria-labelledby="specs-heading">
-          <h3 id="specs-heading" style={{ fontSize: '1.25rem', marginBottom: '1rem' }}>
-            Phase 1 Architectural Checklist Completed
-          </h3>
-          <ul style={{ listStyleType: 'none', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            <li style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--text-muted)' }}>
-              <span style={{ color: 'var(--accent-emerald)', fontWeight: 'bold' }}>✓</span>
-              PostgreSQL primary DB connection using Async SQLAlchemy 2.0 with <code style={{ color: 'var(--accent-cyan)' }}>NUMERIC(10,2)</code> currency columns.
-            </li>
-            <li style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--text-muted)' }}>
-              <span style={{ color: 'var(--accent-emerald)', fontWeight: 'bold' }}>✓</span>
-              Clean 6-layer separation: React UI &rarr; API Client &rarr; FastAPI Routes &rarr; Service Layer &rarr; DB Models &rarr; AI Service.
-            </li>
-            <li style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--text-muted)' }}>
-              <span style={{ color: 'var(--accent-emerald)', fontWeight: 'bold' }}>✓</span>
-              Isolated <code style={{ color: 'var(--accent-cyan)' }}>BaseAIService</code> abstract interface with zero paid API dependencies.
-            </li>
-            <li style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--text-muted)' }}>
-              <span style={{ color: 'var(--accent-emerald)', fontWeight: 'bold' }}>✓</span>
-              Single-service App Runner deployment static asset mounting structure configured in <code style={{ color: 'var(--accent-cyan)' }}>backend/app/main.py</code>.
-            </li>
-            <li style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--text-muted)' }}>
-              <span style={{ color: 'var(--accent-emerald)', fontWeight: 'bold' }}>✓</span>
-              Academic progress tracking log initialized at <code style={{ color: 'var(--accent-cyan)' }}>docs/development-log.md</code>.
-            </li>
-          </ul>
-        </section>
+        {/* Trip Dashboard Core Feature */}
+        <TripDashboard />
       </main>
     </div>
   );
 };
+
