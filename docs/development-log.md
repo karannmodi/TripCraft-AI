@@ -125,6 +125,47 @@
   - Decomposing multi-day LLM tasks into single-day structured prompts dramatically improves response quality and eliminates empty days for small 1B parameter models, while strict Pydantic validation combined with atomic DB persistence guarantees data completeness and database integrity.
 - **Time Spent**: ~2.5 hours
 
+### Entry 5: Phase 4 — Reservation Organizer & Budget Tracker
+- **Date/Time**: 2026-08-11
+- **Stage**: Phase 4 — Reservation Organizer & Budget Tracker (Assignment 5.3)
+- **Prompts / Directives**:
+  - Implement full-stack Reservation Organizer supporting `Lodging`, `Transportation`, `Restaurant`, `Activity` types with CRUD operations, status tracking, provider info, confirmation codes, datetime validation, and Decimal cost handling.
+  - Implement full-stack Budget Tracker using traditional Python `Decimal` / PostgreSQL `NUMERIC(10,2)` application logic (no AI arithmetic).
+  - Calculate overall trip budget, total estimated spending, total actual spending, estimated budget remaining, actual budget remaining, and category breakdowns.
+  - Integrate tabbed sub-navigation in `TripDetailModal` (*Details*, *Itinerary*, *Reservations*, *Budget Tracker*) keeping existing dark glassmorphic styling.
+  - Validate non-blank titles/descriptions, non-negative amounts, and date ordering (`end_time >= start_time`).
+  - Populate demonstration records for Chicago Weekend:
+    - Reservations: Chicago Hotel ($725.00), Architecture River Cruise ($75.00), Dinner Reservation ($120.00).
+    - Expenses: Hotel (Est: $700.00, Act: $725.00), Transportation (Est: $150.00, Act: $135.00), Food (Est: $350.00, Act: $320.00), Activities (Est: $250.00, Act: $245.00).
+  - Ensure frontend production build (`npm run build`) passes cleanly.
+- **Changes Implemented**:
+  - **Backend**:
+    - Refined `backend/app/schemas/reservation.py` (`ReservationBase`, `ReservationCreate`, `ReservationUpdate`, `ReservationResponse`) with `min_length=1` non-blank title validator, non-negative cost validator, and `end_time >= start_time` model validator.
+    - Refined `backend/app/schemas/budget.py` (`ExpenseBase`, `ExpenseCreate`, `ExpenseUpdate`, `ExpenseResponse`, `BudgetSummaryResponse`, `CategoryBudgetBreakdown`) with non-blank description validator, non-negative estimated/actual amount validators, and exact Decimal formatted serializers.
+    - Created `backend/app/services/reservation_service.py` for database CRUD operations on `Reservation` model.
+    - Created `backend/app/services/budget_service.py` for exact Decimal budget calculations and CRUD operations on `Expense` model.
+    - Created `backend/app/api/v1/reservations.py` (`GET`, `POST`, `PUT`, `DELETE` endpoints under `/trips/{id}/reservations`).
+    - Created `backend/app/api/v1/budget.py` (`GET /trips/{id}/budget` and `POST`, `PUT`, `DELETE` endpoints under `/trips/{id}/expenses`).
+    - Mounted routers in `backend/app/api/v1/router.py`.
+  - **Frontend**:
+    - Updated `frontend/src/types/trip.ts` with `Reservation`, `Expense`, `BudgetSummary`, and input interfaces.
+    - Updated `frontend/src/api/client.ts` with Reservation and Budget API wrapper functions.
+    - Created `ReservationFormModal.tsx` for accessible reservation creation and editing with client-side error alerts.
+    - Created `ReservationsView.tsx` with filter pills (`All`, `Lodging`, `Transportation`, `Restaurant`, `Activity`), status badges (`Confirmed`, `Pending`, `Cancelled`), cards layout, empty state, and delete modal.
+    - Created `ExpenseFormModal.tsx` for accessible expense creation and editing.
+    - Created `BudgetView.tsx` featuring 5 summary stat cards (**Trip Budget**, **Total Estimated Spending**, **Total Actual Spending**, **Estimated Budget Remaining**, **Actual Budget Remaining**), category breakdown table, expense table, and delete modal.
+    - Updated `TripDetailModal.tsx` with top tabbed sub-navigation bar (*Details*, *Itinerary*, *Reservations*, *Budget Tracker*).
+    - Updated `DeleteConfirmModal.tsx` to support optional custom titles and messages.
+- **Challenges / Errors & Solutions**:
+  - *Challenge 1 (Type Error on Missing Schema Import)*: Starting uvicorn triggered `NameError: name 'Any' is not defined` in `reservation.py`.
+  - *Solution*: Added `Any` to `from typing import Optional, Any` in `backend/app/schemas/reservation.py`.
+  - *Challenge 2 (TypeScript Build Errors)*: Running `npm run build` flagged unused Lucide icon imports and a typo in `justify: 'space-between'`.
+  - *Solution*: Cleaned up unused imports in React components, replaced `justify` with `justifyContent`, and changed `WalletCard` to `Wallet` icon in `TripDetailModal.tsx`.
+- **Lessons Learned**:
+  - Performing financial calculations strictly in Python/FastAPI using `Decimal` completely eliminates floating-point rounding errors and LLM hallucination risks, while FastAPI Pydantic schema serializers guarantee exact `"700.00"` formatting across the REST interface.
+- **Time Spent**: ~2.0 hours
+
+
 
 
 

@@ -3,8 +3,10 @@ import { AlertTriangle, X } from 'lucide-react';
 
 interface DeleteConfirmModalProps {
   isOpen: boolean;
-  tripTitle: string;
-  isDeleting: boolean;
+  tripTitle?: string;
+  title?: string;
+  message?: string;
+  isDeleting?: boolean;
   onConfirm: () => void;
   onClose: () => void;
 }
@@ -12,7 +14,9 @@ interface DeleteConfirmModalProps {
 export const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
   isOpen,
   tripTitle,
-  isDeleting,
+  title = 'Confirm Deletion',
+  message,
+  isDeleting = false,
   onConfirm,
   onClose,
 }) => {
@@ -35,7 +39,7 @@ export const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        zIndex: 1000,
+        zIndex: 1200,
         padding: '1rem'
       }}
     >
@@ -52,7 +56,7 @@ export const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#ef4444' }}>
             <AlertTriangle size={24} />
             <h3 id="delete-dialog-title" style={{ fontSize: '1.25rem', margin: 0, color: 'var(--text-main)' }}>
-              Confirm Deletion
+              {title}
             </h3>
           </div>
           <button 
@@ -66,7 +70,9 @@ export const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
         </div>
 
         <p style={{ color: 'var(--text-muted)', lineHeight: '1.5', marginBottom: '1.5rem' }}>
-          Are you sure you want to delete <strong style={{ color: 'var(--text-main)' }}>"{tripTitle}"</strong>? This will permanently remove the trip from PostgreSQL.
+          {message || (
+            <>Are you sure you want to delete <strong style={{ color: 'var(--text-main)' }}>"{tripTitle}"</strong>? This will permanently remove the record.</>
+          )}
         </p>
 
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
@@ -102,7 +108,7 @@ export const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
               gap: '0.5rem'
             }}
           >
-            {isDeleting ? 'Deleting...' : 'Delete Trip'}
+            {isDeleting ? 'Deleting...' : 'Confirm Delete'}
           </button>
         </div>
       </div>

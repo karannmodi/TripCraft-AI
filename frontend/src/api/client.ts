@@ -1,4 +1,16 @@
-import { HealthResponse, Trip, TripCreateInput, TripUpdateInput } from '../types/trip';
+import {
+  HealthResponse,
+  Trip,
+  TripCreateInput,
+  TripUpdateInput,
+  Reservation,
+  ReservationCreateInput,
+  ReservationUpdateInput,
+  Expense,
+  ExpenseCreateInput,
+  ExpenseUpdateInput,
+  BudgetSummary,
+} from '../types/trip';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
@@ -177,4 +189,132 @@ export async function deleteActivity(tripId: string, activityId: string): Promis
   }
 }
 
+// --- Reservation APIs ---
+export async function fetchReservations(tripId: string): Promise<Reservation[]> {
+  const url = `${BASE_URL}/api/v1/trips/${tripId}/reservations`;
+  const response = await fetch(url, {
+    headers: { 'Accept': 'application/json' },
+  });
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.detail || `Failed to fetch reservations (${response.status})`);
+  }
+  return response.json();
+}
 
+export async function createReservation(tripId: string, payload: ReservationCreateInput): Promise<Reservation> {
+  const url = `${BASE_URL}/api/v1/trips/${tripId}/reservations`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    const detailMsg = Array.isArray(errorData.detail)
+      ? errorData.detail.map((e: any) => e.msg).join(', ')
+      : errorData.detail;
+    throw new Error(detailMsg || `Failed to create reservation (${response.status})`);
+  }
+  return response.json();
+}
+
+export async function updateReservation(reservationId: string, payload: ReservationUpdateInput): Promise<Reservation> {
+  const url = `${BASE_URL}/api/v1/trips/reservations/${reservationId}`;
+  const response = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    const detailMsg = Array.isArray(errorData.detail)
+      ? errorData.detail.map((e: any) => e.msg).join(', ')
+      : errorData.detail;
+    throw new Error(detailMsg || `Failed to update reservation (${response.status})`);
+  }
+  return response.json();
+}
+
+export async function deleteReservation(reservationId: string): Promise<void> {
+  const url = `${BASE_URL}/api/v1/trips/reservations/${reservationId}`;
+  const response = await fetch(url, {
+    method: 'DELETE',
+    headers: { 'Accept': 'application/json' },
+  });
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.detail || `Failed to delete reservation (${response.status})`);
+  }
+}
+
+// --- Budget & Expense APIs ---
+export async function fetchBudgetSummary(tripId: string): Promise<BudgetSummary> {
+  const url = `${BASE_URL}/api/v1/trips/${tripId}/budget`;
+  const response = await fetch(url, {
+    headers: { 'Accept': 'application/json' },
+  });
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.detail || `Failed to fetch budget summary (${response.status})`);
+  }
+  return response.json();
+}
+
+export async function createExpense(tripId: string, payload: ExpenseCreateInput): Promise<Expense> {
+  const url = `${BASE_URL}/api/v1/trips/${tripId}/expenses`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    const detailMsg = Array.isArray(errorData.detail)
+      ? errorData.detail.map((e: any) => e.msg).join(', ')
+      : errorData.detail;
+    throw new Error(detailMsg || `Failed to create expense (${response.status})`);
+  }
+  return response.json();
+}
+
+export async function updateExpense(expenseId: string, payload: ExpenseUpdateInput): Promise<Expense> {
+  const url = `${BASE_URL}/api/v1/trips/expenses/${expenseId}`;
+  const response = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    const detailMsg = Array.isArray(errorData.detail)
+      ? errorData.detail.map((e: any) => e.msg).join(', ')
+      : errorData.detail;
+    throw new Error(detailMsg || `Failed to update expense (${response.status})`);
+  }
+  return response.json();
+}
+
+export async function deleteExpense(expenseId: string): Promise<void> {
+  const url = `${BASE_URL}/api/v1/trips/expenses/${expenseId}`;
+  const response = await fetch(url, {
+    method: 'DELETE',
+    headers: { 'Accept': 'application/json' },
+  });
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.detail || `Failed to delete expense (${response.status})`);
+  }
+}
