@@ -11,8 +11,8 @@ class Settings(BaseSettings):
     PORT: int = 8000
     HOST: str = "0.0.0.0"
 
-    # PostgreSQL Database URL (least-privilege application role fallback)
-    DATABASE_URL: str = "postgresql+asyncpg://tripcraft_app:tripcraft_pass@localhost:5432/tripcraft"
+    # PostgreSQL Database URL (required from environment configuration - no fallback credentials)
+    DATABASE_URL: str
 
     # Ollama AI Configuration
     OLLAMA_BASE_URL: str = "http://localhost:11434"
