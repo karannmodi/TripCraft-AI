@@ -1,168 +1,103 @@
-# Assignment 5.4 — Comprehensive Testing Checklist for TripCraft AI
+# Assignment 5.4 — Consolidated Testing Checklist for TripCraft AI
 
 **Baseline Tag**: `pre-5.4-baseline` (Commit `b776188`)  
-**Status Key**: `PENDING` (Not yet executed), `PASS` (Verified success), `FAIL` (Defect identified)
+**Status Key**: `PENDING` (Not yet executed), `PASS` (Verified success), `FAIL` (Defect identified)  
+**Total Consolidated Tests**: **35**
 
 ---
 
 ## 1. Dashboard & Core Navigation
 
-| ID | Area | Test Case | Expected Result | Actual Result | Status | Bug ID/Notes |
+| ID | Area | Test Case | Expected Result | Actual Result | Status | Bug ID / Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| `DASH-001` | Dashboard | Initial dashboard load | Main header, system architecture health card, and trip grid render without errors. | Not Tested | PENDING | - |
-| `DASH-002` | Dashboard | "Check System Health" button click | Pings `/api/v1/health` and updates health status badges (FastAPI, Postgres, Ollama). | Not Tested | PENDING | - |
-| `DASH-003` | Dashboard | Trip Search/Filter input | Filters visible trip cards in real-time by title or destination keyword. | Not Tested | PENDING | - |
-| `DASH-004` | Dashboard | Search with no matching keywords | Displays clean empty search state message ("No trips match your search criteria"). | Not Tested | PENDING | - |
-| `DASH-005` | Dashboard | "+ Create New Trip" button click | Opens Trip Form Modal in creation mode with empty fields. | Not Tested | PENDING | - |
-| `DASH-006` | Dashboard | Trip Card "View Details" button click | Opens 6-tab TripDetailModal for the selected trip. | Not Tested | PENDING | - |
-| `DASH-007` | Dashboard | Trip Card "Edit" button click | Opens Trip Form Modal pre-populated with trip data. | Not Tested | PENDING | - |
-| `DASH-008` | Dashboard | Trip Card "Delete" button click | Opens Delete Confirmation Modal with trip title. | Not Tested | PENDING | - |
-| `DASH-009` | Dashboard | Delete confirmation approval | Sends `DELETE /api/v1/trips/{id}`, removes trip card from grid, and updates UI. | Not Tested | PENDING | - |
-| `DASH-010` | Dashboard | Delete confirmation cancel | Closes modal without deleting trip record from database. | Not Tested | PENDING | - |
+| `DASH-001` | Dashboard | Dashboard & Health Status Overview | Main header, system architecture cards, and health badges load cleanly; clicking "Check System Health" refreshes FastAPI, PostgreSQL, and Ollama statuses. | Not Tested | PENDING | - |
+| `DASH-002` | Dashboard | Trip Search & Filter Workflow | Real-time filtering updates trip cards by title/destination keywords; searching non-existent terms renders clean empty search state. | Not Tested | PENDING | - |
+| `DASH-003` | Dashboard | Trip Card Action Navigation | "View Details" opens 6-tab Workspace modal, "Edit" opens pre-populated form modal, and "Delete" triggers confirmation modal. | Not Tested | PENDING | - |
+| `DASH-004` | Dashboard | Trip Deletion Workflow | Approving deletion sends `DELETE /api/v1/trips/{id}` and removes card from UI; canceling closes modal leaving database record intact. | Not Tested | PENDING | - |
 
 ---
 
 ## 2. Trip Creation & Editing
 
-| ID | Area | Test Case | Expected Result | Actual Result | Status | Bug ID/Notes |
+| ID | Area | Test Case | Expected Result | Actual Result | Status | Bug ID / Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| `TRIP-001` | Trip Form | Submit valid trip form | Successfully creates trip record in PostgreSQL and displays card on dashboard. | Not Tested | PENDING | - |
-| `TRIP-002` | Trip Form | Submit with blank title | Rejects submission with client alert ("Title cannot be blank") and HTTP 422 if forced. | Not Tested | PENDING | - |
-| `TRIP-003` | Trip Form | Submit with whitespace-only title | Rejects submission with validation alert; whitespace trimmed. | Not Tested | PENDING | - |
-| `TRIP-004` | Trip Form | Submit with blank destination | Rejects submission with validation error alert. | Not Tested | PENDING | - |
-| `TRIP-005` | Trip Form | End date before start date | Rejects submission with alert ("End date cannot be before start date") and HTTP 422. | Not Tested | PENDING | - |
-| `TRIP-006` | Trip Form | Zero travelers count | Rejects submission with alert ("Travelers count must be at least 1"). | Not Tested | PENDING | - |
-| `TRIP-007` | Trip Form | Negative travelers count | Rejects submission with alert and HTTP 422 validation error. | Not Tested | PENDING | - |
-| `TRIP-008` | Trip Form | Negative budget amount | Rejects submission with alert ("Estimated budget cannot be negative"). | Not Tested | PENDING | - |
-| `TRIP-009` | Trip Form | Very large budget ($99,999,999.99) | Successfully formats and saves decimal without float overflow. | Not Tested | PENDING | - |
-| `TRIP-010` | Trip Form | Special characters in title (`<script>alert(1)</script>`) | Sanitizes/escapes text cleanly without HTML injection or script execution. | Not Tested | PENDING | - |
-| `TRIP-011` | Trip Form | Very long title (300+ characters) | Enforces max length limits or displays inline validation error. | Not Tested | PENDING | - |
-| `TRIP-012` | Trip Form | Multiple interests selection | Correctly saves and renders tags (e.g. "Architecture", "Food", "Museums"). | Not Tested | PENDING | - |
-| `TRIP-013` | Trip Form | Edit existing trip and save | Updates PostgreSQL record and reflects changes on dashboard and modal. | Not Tested | PENDING | - |
-| `TRIP-014` | Trip Form | Rapid double-click on Save button | Prevents duplicate API submission via loading/disabled state. | Not Tested | PENDING | - |
+| `TRIP-001` | Trip Form | Valid Trip Creation Workflow | Submitting valid parameters creates PostgreSQL record and renders new trip card on dashboard. | Not Tested | PENDING | - |
+| `TRIP-002` | Trip Form | Trip Form Invalid Input Validation | Test required fields (blank title/destination), whitespace-only text, end date before start date, traveler count < 1, and negative budget. Confirm UI alerts and HTTP 422 rejections. | Not Tested | PENDING | - |
+| `TRIP-003` | Trip Form | Boundary & Large Field Values | Test long text strings (250+ chars), large budget ($99,999,999.99), and multi-tag interests to verify clean UI rendering and exact Decimal formatting. | Not Tested | PENDING | - |
+| `TRIP-004` | Trip Form | Trip Edit & Update Workflow | Editing existing trip parameters (title, dates, budget, interests) updates PostgreSQL record and refreshes dashboard and detail modal. | Not Tested | PENDING | - |
+| `TRIP-005` | Trip Form | Rapid Double-Submission Prevention | Clicking "Save" twice quickly activates loading/disabled button state, preventing duplicate API creation calls. | Not Tested | PENDING | - |
 
 ---
 
 ## 3. Itinerary Generator & Activity Editor
 
-| ID | Area | Test Case | Expected Result | Actual Result | Status | Bug ID/Notes |
+| ID | Area | Test Case | Expected Result | Actual Result | Status | Bug ID / Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| `ITIN-001` | Itinerary | View existing itinerary days | Displays chronological day cards with 2–3 activities per day and formatted costs. | Not Tested | PENDING | - |
-| `ITIN-002` | Itinerary | Click "Generate AI Itinerary" (no existing itinerary) | Calls Ollama (`gemma3:1b`), displays spinner, and renders generated itinerary. | Not Tested | PENDING | - |
-| `ITIN-003` | Itinerary | Click "Regenerate AI Itinerary" (when itinerary exists) | Displays Overwrite Confirmation Modal before calling Ollama. | Not Tested | PENDING | - |
-| `ITIN-004` | Itinerary | Cancel overwrite confirmation | Closes confirmation modal and leaves existing itinerary intact. | Not Tested | PENDING | - |
-| `ITIN-005` | Itinerary | Confirm overwrite | Replaces existing AI itinerary items in PostgreSQL with fresh generated days. | Not Tested | PENDING | - |
-| `ITIN-006` | Itinerary | Edit Activity modal open & submit | Updates activity title, time slot, location, estimated cost, and category. | Not Tested | PENDING | - |
-| `ITIN-007` | Itinerary | Delete Activity & confirm | Removes activity from itinerary day and updates DB. | Not Tested | PENDING | - |
-| `ITIN-008` | Itinerary | Edit activity with negative cost | Rejects update with validation error alert. | Not Tested | PENDING | - |
-| `ITIN-009` | Itinerary | Ollama server offline / unreachable | Returns clear HTTP 503 error alert ("Ollama AI service is offline or unreachable"). | Not Tested | PENDING | - |
+| `ITIN-001` | Itinerary | Itinerary Display & Chronological Completeness | Displays chronological day cards for all calendar dates with 2–3 activities per day, time slots, and formatted costs. | Not Tested | PENDING | - |
+| `ITIN-002` | Itinerary | AI Generation & Overwrite Workflow | Generates initial AI itinerary via `gemma3:1b`; clicking "Regenerate" displays overwrite modal, and confirming replaces existing itinerary days in DB. | Not Tested | PENDING | - |
+| `ITIN-003` | Itinerary | Activity Edit & Delete Management | Editing activity parameters (title, time slot, location, cost, category) updates DB; invalid negative cost is rejected; deleting activity removes it from day. | Not Tested | PENDING | - |
+| `ITIN-004` | Itinerary | Ollama Failure & Completeness Recovery | Offline Ollama service displays HTTP 503 error alert; incomplete generated days (< 2 activities) trigger automatic controlled retry. | Not Tested | PENDING | - |
 
 ---
 
 ## 4. Reservation Organizer
 
-| ID | Area | Test Case | Expected Result | Actual Result | Status | Bug ID/Notes |
+| ID | Area | Test Case | Expected Result | Actual Result | Status | Bug ID / Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| `RES-001` | Reservations | View reservations list | Displays reservation cards with badges for type (`Lodging`, `Transportation`, `Restaurant`, `Activity`) and status. | Not Tested | PENDING | - |
-| `RES-002` | Reservations | Category filter pills (`All`, `Lodging`, etc.) | Filters displayed reservation cards by selected type. | Not Tested | PENDING | - |
-| `RES-003` | Reservations | Add new reservation (valid data) | Persists record in PostgreSQL and displays card under correct type. | Not Tested | PENDING | - |
-| `RES-004` | Reservations | Add reservation with blank title | Rejects with alert ("Reservation title cannot be blank") and HTTP 422. | Not Tested | PENDING | - |
-| `RES-005` | Reservations | End date/time before start date/time | Rejects with alert ("End time cannot be before start time") and HTTP 422. | Not Tested | PENDING | - |
-| `RES-006` | Reservations | Negative cost amount | Rejects with alert ("Cost cannot be negative") and HTTP 422. | Not Tested | PENDING | - |
-| `RES-007` | Reservations | Edit existing reservation | Updates fields (provider, confirmation code, cost, status) in DB and UI. | Not Tested | PENDING | - |
-| `RES-008` | Reservations | Delete reservation & confirm | Removes reservation from PostgreSQL and updates list. | Not Tested | PENDING | - |
-| `RES-009` | Reservations | Status change (`Confirmed` -> `Cancelled`) | Updates status badge and preserves cost records. | Not Tested | PENDING | - |
+| `RES-001` | Reservations | Reservation Listing & Category Filtering | Renders reservation cards with type/status badges; category pill filters (`All`, `Lodging`, `Transportation`, `Restaurant`, `Activity`) filter visible cards. | Not Tested | PENDING | - |
+| `RES-002` | Reservations | Add Reservation Workflow | Submitting valid reservation across any type with confirmation code, provider, times, cost, and notes persists in PostgreSQL and renders card. | Not Tested | PENDING | - |
+| `RES-003` | Reservations | Reservation Validation Handling | Test blank title, end time before start time, and negative cost. Confirm form/API rejects each invalid condition with clear alerts and HTTP 422. | Not Tested | PENDING | - |
+| `RES-004` | Reservations | Reservation Edit & Delete Workflow | Editing reservation parameters (status `Confirmed` -> `Cancelled`, cost, provider) updates DB; deleting reservation with confirmation removes record. | Not Tested | PENDING | - |
 
 ---
 
 ## 5. Budget Tracker
 
-| ID | Area | Test Case | Expected Result | Actual Result | Status | Bug ID/Notes |
+| ID | Area | Test Case | Expected Result | Actual Result | Status | Bug ID / Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| `BUD-001` | Budget | Display Summary Stat Cards | Correctly displays Trip Budget, Total Est Spent, Total Act Spent, Est Remaining, Act Remaining. | Not Tested | PENDING | - |
-| `BUD-002` | Budget | Category Breakdown table | Sums estimated and actual expenses by category (`Lodging`, `Food`, etc.) accurately. | Not Tested | PENDING | - |
-| `BUD-003` | Budget | Add valid expense | Inserts expense into PostgreSQL and updates stat cards immediately. | Not Tested | PENDING | - |
-| `BUD-004` | Budget | Add expense with blank description | Rejects with alert ("Expense description cannot be blank") and HTTP 422. | Not Tested | PENDING | - |
-| `BUD-005` | Budget | Add expense with negative estimated/actual amount | Rejects with alert ("Expense amounts cannot be negative") and HTTP 422. | Not Tested | PENDING | - |
-| `BUD-006` | Budget | Edit existing expense | Updates amounts/category in DB and recalculates budget balances in real-time. | Not Tested | PENDING | - |
-| `BUD-007` | Budget | Toggle "Is Paid" checkbox | Toggles paid status in DB without altering amounts. | Not Tested | PENDING | - |
-| `BUD-008` | Budget | Delete expense & confirm | Deletes expense record and updates budget remaining cards. | Not Tested | PENDING | - |
-| `BUD-009` | Budget | Zero value expense ($0.00) | Successfully saves $0.00 expense without error. | Not Tested | PENDING | - |
+| `BUD-001` | Budget | Budget Stat Cards & Category Breakdown | Accurately calculates and displays Trip Budget, Total Est Spent, Total Act Spent, Est Remaining, Act Remaining, and Category Breakdown totals using Python `Decimal`. | Not Tested | PENDING | - |
+| `BUD-002` | Budget | Expense Creation & Paid Toggle | Submitting valid expense across categories (`Lodging`, `Food`, etc.) inserts DB record and updates stat cards; toggling "Is Paid" updates DB status. | Not Tested | PENDING | - |
+| `BUD-003` | Budget | Expense Validation & Zero Values | Test submitting expense with blank description or negative amounts (rejected with HTTP 422) and test saving valid $0.00 zero-value expense. | Not Tested | PENDING | - |
+| `BUD-004` | Budget | Expense Edit & Delete Workflow | Editing expense amounts/categories updates DB and recalculates budget balances in real-time; deleting expense updates remaining balance. | Not Tested | PENDING | - |
 
 ---
 
 ## 6. Packing Assistant
 
-| ID | Area | Test Case | Expected Result | Actual Result | Status | Bug ID/Notes |
+| ID | Area | Test Case | Expected Result | Actual Result | Status | Bug ID / Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| `PACK-001` | Packing | Initial load / empty state | Renders empty state with "Generate AI Packing List" button. | Not Tested | PENDING | - |
-| `PACK-002` | Packing | Generate AI packing list (`gemma3:1b`) | Returns 8–14 items across 6 categories, saves in DB with `is_ai_suggested=True`. | Not Tested | PENDING | - |
-| `PACK-003` | Packing | Toggle `is_packed` checkbox | Toggles item state in DB and updates progress bar (`X/Y packed`). | Not Tested | PENDING | - |
-| `PACK-004` | Packing | Add custom manual item | Inserts item with `is_ai_suggested=False` and displays "Custom" badge. | Not Tested | PENDING | - |
-| `PACK-005` | Packing | Edit packing item (name/category) | Updates item details in PostgreSQL and UI. | Not Tested | PENDING | - |
-| `PACK-006` | Packing | Delete packing item & confirm | Removes item from list and updates progress bar. | Not Tested | PENDING | - |
-| `PACK-007` | Packing | Regenerate AI packing list (with custom items present) | Opens confirmation modal; upon confirm, replaces AI items while preserving manual items intact. | Not Tested | PENDING | - |
-| `PACK-008` | Packing | Checkbox state persistence after page refresh | Re-querying DB confirms all packed checkbox states remain unchanged. | Not Tested | PENDING | - |
-| `PACK-009` | Packing | Ollama offline during packing generation | Displays clear HTTP 503 error alert without losing existing items. | Not Tested | PENDING | - |
+| `PACK-001` | Packing | AI Packing Generation & Progress Display | Generates AI packing list (`gemma3:1b`) across 6 categories; checking items updates progress bar (`X/Y packed`) and percentage. | Not Tested | PENDING | - |
+| `PACK-002` | Packing | Manual Item CRUD & Checkbox Persistence | Adding custom item (`is_ai_suggested=False`) displays "Custom" badge; editing/deleting updates DB; checking item persists after page refresh. | Not Tested | PENDING | - |
+| `PACK-003` | Packing | Safe Regeneration & Custom Item Preservation | Regenerating AI packing list after confirmation replaces AI-suggested items while preserving manually added custom items and their packed state intact. | Not Tested | PENDING | - |
+| `PACK-004` | Packing | Packing Offline Error Handling | Offline Ollama service displays clear HTTP 503 error alert without losing existing packing items. | Not Tested | PENDING | - |
 
 ---
 
 ## 7. Ask My Trip Assistant
 
-| ID | Area | Test Case | Expected Result | Actual Result | Status | Bug ID/Notes |
+| ID | Area | Test Case | Expected Result | Actual Result | Status | Bug ID / Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| `CHAT-001` | Ask My Trip | Click suggestion pill: "What reservations do I have?" | Instantly returns deterministic list of confirmed reservations (< 0.1s). | Not Tested | PENDING | - |
-| `CHAT-002` | Ask My Trip | Click suggestion pill: "How much of my budget have I spent?" | Instantly returns exact spent ($1,425.00) and remaining ($375.00) amounts (< 0.1s). | Not Tested | PENDING | - |
-| `CHAT-003` | Ask My Trip | Click suggestion pill: "Which day has the most activities?" | Instantly returns busiest day details (< 0.1s). | Not Tested | PENDING | - |
-| `CHAT-004` | Ask My Trip | Click suggestion pill: "What do I still need to pack?" | Instantly returns remaining unpacked items list (< 0.1s). | Not Tested | PENDING | - |
-| `CHAT-005` | Ask My Trip | Click suggestion pill: "Summarize my trip." | Calls local Ollama (`gemma3:1b`) with pre-calculated facts and displays narrative summary. | Not Tested | PENDING | - |
-| `CHAT-006` | Ask My Trip | Ask question about non-existent data ("Where is my passport scan?") | Returns clear response stating information is unavailable rather than hallucinating. | Not Tested | PENDING | - |
-| `CHAT-007` | Ask My Trip | Submit blank / whitespace prompt | Rejects submission with alert ("Message prompt cannot be blank") or disables button. | Not Tested | PENDING | - |
-| `CHAT-008` | Ask My Trip | Chat history persistence after page refresh | All past user and assistant messages remain visible in chronological order. | Not Tested | PENDING | - |
-| `CHAT-009` | Ask My Trip | Ollama offline during narrative summary request | Displays clear HTTP 503 error alert ("Ollama AI service is offline"). | Not Tested | PENDING | - |
+| `CHAT-001` | Ask My Trip | Deterministic Fact-First Q&A | Clicking suggestion pills or asking factual questions (reservations, budget spent/remaining, busiest day, packing stats) returns instant deterministic responses (< 0.1s) matching DB values. | Not Tested | PENDING | - |
+| `CHAT-002` | Ask My Trip | Ollama Narrative Trip Summary | Asking "Summarize my trip" calls local Ollama model (`gemma3:1b`) with pre-calculated DB facts and renders natural narrative response. | Not Tested | PENDING | - |
+| `CHAT-003` | Ask My Trip | Unavailable Information & Empty Input | Asking for non-existent database facts returns clear refusal stating data is unavailable rather than hallucinating; submitting blank message is rejected. | Not Tested | PENDING | - |
+| `CHAT-004` | Ask My Trip | Chat History Persistence & Offline Handling | Past Q&A message thread persists across page refresh; offline Ollama service displays HTTP 503 error alert for narrative requests. | Not Tested | PENDING | - |
 
 ---
 
-## 8. Accessibility (A11Y) & Responsive Design
+## 8. Accessibility & Responsive Design
 
-| ID | Area | Test Case | Expected Result | Actual Result | Status | Bug ID/Notes |
+| ID | Area | Test Case | Expected Result | Actual Result | Status | Bug ID / Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| `A11Y-001` | Accessibility | Keyboard Navigation (Tab / Shift+Tab) | Logical focus order through header, cards, modals, tabs, and form controls. | Not Tested | PENDING | - |
-| `A11Y-002` | Accessibility | Visible Focus Indicator | All interactive elements display high-contrast focus rings when focused. | Not Tested | PENDING | - |
-| `A11Y-003` | Accessibility | Enter / Space Activation | All buttons, tabs, checkboxes, and links activate cleanly using Enter or Space. | Not Tested | PENDING | - |
-| `A11Y-004` | Accessibility | Escape key modal close | Pressing Escape dismisses active form or delete confirmation modals. | Not Tested | PENDING | - |
-| `A11Y-005` | Accessibility | Form Input Labels | Every text, number, date, and select field has explicit `<label>` or `aria-label`. | Not Tested | PENDING | - |
-| `A11Y-006` | Accessibility | Icon Button Names | All icon-only buttons (close, edit, delete) have `aria-label` or `title`. | Not Tested | PENDING | - |
-| `A11Y-007` | Accessibility | Focus Trapping in Modals | Focus remains constrained within open modal dialogs (`role="dialog"`). | Not Tested | PENDING | - |
-| `RESP-001` | Responsive | Desktop viewport (1280px+) | Full multi-column grid layout, visible stat cards, side-by-side modal panels. | Not Tested | PENDING | - |
-| `RESP-002` | Responsive | Tablet viewport (768px - 1023px) | 2-column adaptive layout, scrollable navigation tabs, responsive cards. | Not Tested | PENDING | - |
-| `RESP-003` | Responsive | Mobile viewport (< 767px) | Single-column layout, touch-friendly touch targets (44px+), no horizontal overflow. | Not Tested | PENDING | - |
+| `A11Y-001` | Accessibility | Keyboard Navigation & Focus Ring Visibility | Full keyboard-only Tab/Shift+Tab navigation through header, cards, tabs, and form controls displays visible high-contrast focus indicators. | Not Tested | PENDING | - |
+| `A11Y-002` | Accessibility | Control Activation & Modal Escape Dismissal | All buttons, tabs, checkboxes, and links activate cleanly using Enter or Space; pressing Escape key dismisses active modal dialogs. | Not Tested | PENDING | - |
+| `A11Y-003` | Accessibility | Form Labels, Error Alerts & Focus Trapping | Form inputs feature explicit `<label>` bindings, error alerts are clear and readable, and open modal dialogs (`role="dialog"`) trap focus cleanly. | Not Tested | PENDING | - |
+| `RESP-001` | Responsive | Multi-Viewport Responsive Usability | Renders layout cleanly at desktop (1280px+), tablet (768px–1023px), and mobile (< 767px) viewports with touch-friendly targets and zero horizontal overflow. | Not Tested | PENDING | - |
 
 ---
 
 ## 9. Responsible AI Behavior
 
-| ID | Area | Test Case | Expected Result | Actual Result | Status | Bug ID/Notes |
+| ID | Area | Test Case | Expected Result | Actual Result | Status | Bug ID / Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| `RAI-001` | Responsible AI | Fact-first budget/reservation answers | Financial facts originate from PostgreSQL queries in Python, avoiding LLM math errors. | Not Tested | PENDING | - |
-| `RAI-002` | Responsible AI | Refusal to hallucinate missing facts | Explicitly states data is unavailable if requested info is absent from database. | Not Tested | PENDING | - |
-| `RAI-003` | Responsible AI | Malformed AI JSON handling | Rejects malformed LLM output with Pydantic validation and 1 controlled retry. | Not Tested | PENDING | - |
-| `RAI-004` | Responsible AI | Incomplete day itinerary check | Rejects generated itineraries containing empty days (< 2 activities per day). | Not Tested | PENDING | - |
-| `RAI-005` | Responsible AI | Preservation of custom packing items | Regeneration replaces AI items while retaining user-added items and packed status. | Not Tested | PENDING | - |
-| `RAI-006` | Responsible AI | Graceful Ollama offline handling | Returns explicit HTTP 503 error alert instead of mock fallback or broken state. | Not Tested | PENDING | - |
-
----
-
-## Test Inventory Summary
-
-- **Total Test Cases Identified**: **75**
-- **Categories**:
-  1. Dashboard & Core Navigation: `10`
-  2. Trip Creation & Editing: `14`
-  3. Itinerary Generator & Activity Editor: `9`
-  4. Reservation Organizer: `9`
-  5. Budget Tracker: `9`
-  6. Packing Assistant: `9`
-  7. Ask My Trip Assistant: `9`
-  8. Accessibility & Responsive Design: `10`
-  9. Responsible AI Behavior: `6`
+| `RAI-001` | Responsible AI | Fact Grounding & Math Calculation Isolation | All financial metrics, budget remaining totals, and reservation figures are computed in Python/PostgreSQL rather than LLM inference, preventing math errors. | Not Tested | PENDING | - |
+| `RAI-002` | Responsible AI | AI Output Validation & Key Normalization | Pydantic schema validation and key normalization handle small LLM JSON key variations (`item_name`, `name`, `item`) with 1 controlled retry on malformed structures. | Not Tested | PENDING | - |
