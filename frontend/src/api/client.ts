@@ -19,6 +19,13 @@ import {
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
+function formatApiError(status: number, detail?: string, fallbackMessage: string = 'Operation failed'): string {
+  if (status === 503 || detail?.toLowerCase().includes('ollama') || detail?.toLowerCase().includes('offline') || detail?.toLowerCase().includes('unreachable')) {
+    return 'AI generation is unavailable in this cloud demo. TripCraft uses a locally hosted Ollama model that is intentionally not exposed publicly.';
+  }
+  return detail || `${fallbackMessage} (${status})`;
+}
+
 export async function fetchHealth(): Promise<HealthResponse> {
   const url = `${BASE_URL}/api/v1/health`;
   const response = await fetch(url, {
@@ -115,7 +122,7 @@ export async function generateItinerary(tripId: string, overwrite: boolean = fal
   });
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.detail || `Failed to generate AI itinerary (${response.status})`);
+    throw new Error(formatApiError(response.status, errorData.detail, 'Failed to generate AI itinerary'));
   }
   return response.json();
 }
@@ -264,7 +271,7 @@ export async function generatePackingList(tripId: string, overwrite: boolean = f
   });
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.detail || `Failed to generate AI packing list (${response.status})`);
+    throw new Error(formatApiError(response.status, errorData.detail, 'Failed to generate AI packing list'));
   }
   return response.json();
 }
@@ -326,7 +333,7 @@ export async function sendChatMessage(tripId: string, message: string): Promise<
   });
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.detail || `Assistant error (${response.status})`);
+    throw new Error(formatApiError(response.status, errorData.detail, 'Assistant error'));
   }
   return response.json();
 }

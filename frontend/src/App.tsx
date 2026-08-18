@@ -34,7 +34,7 @@ export const App: React.FC = () => {
       <Header />
 
       <main role="main">
-        {/* System Architecture & Health Widget */}
+          {/* System Architecture & Health Widget */}
         <section className="card" style={{ marginBottom: '1.5rem' }} aria-labelledby="foundation-heading">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
             <div>
@@ -42,7 +42,9 @@ export const App: React.FC = () => {
                 TripCraft AI — System Architecture &amp; Health
               </h2>
               <p style={{ color: 'var(--text-muted)', maxWidth: '750px', margin: 0, fontSize: '0.9rem' }}>
-                React 18 frontend communicating with FastAPI, PostgreSQL (NUMERIC 10,2 exact currency precision), and local Ollama (Gemma 3 1B).
+                {health?.environment?.toLowerCase() === 'production'
+                  ? 'React 18 on AWS Amplify, FastAPI & PostgreSQL on Render (NUMERIC 10,2 exact currency precision), with local Ollama for development.'
+                  : 'React 18 frontend communicating with FastAPI, PostgreSQL (NUMERIC 10,2 exact currency precision), and local Ollama (Gemma 3 1B).'}
               </p>
             </div>
             <button
@@ -90,9 +92,15 @@ export const App: React.FC = () => {
                     <Cpu size={18} />
                     <strong style={{ color: 'var(--text-main)', fontSize: '0.9rem' }}>Local AI Model</strong>
                   </div>
-                  <span className="badge badge-success" style={{ fontSize: '0.75rem', background: 'rgba(168, 85, 247, 0.2)', color: '#c084fc', border: '1px solid rgba(168, 85, 247, 0.3)' }}>
-                    OLLAMA / GEMMA 3 1B
-                  </span>
+                  {health.environment?.toLowerCase() === 'production' ? (
+                    <span className="badge" style={{ fontSize: '0.75rem', background: 'rgba(245, 158, 11, 0.15)', color: '#fbbf24', border: '1px solid rgba(245, 158, 11, 0.3)' }}>
+                      NOT ENABLED IN CLOUD DEMO
+                    </span>
+                  ) : (
+                    <span className="badge badge-success" style={{ fontSize: '0.75rem', background: 'rgba(168, 85, 247, 0.2)', color: '#c084fc', border: '1px solid rgba(168, 85, 247, 0.3)' }}>
+                      OLLAMA / GEMMA 3 1B
+                    </span>
+                  )}
                 </div>
 
                 <div className="card" style={{ background: 'rgba(15, 23, 42, 0.6)', padding: '1rem' }}>
@@ -100,7 +108,15 @@ export const App: React.FC = () => {
                     <ShieldCheck size={18} />
                     <strong style={{ color: 'var(--text-main)', fontSize: '0.9rem' }}>MVP Readiness</strong>
                   </div>
-                  <span className="badge badge-success" style={{ fontSize: '0.75rem' }}>FULL-STACK MVP READY</span>
+                  {health.environment?.toLowerCase() === 'production' ? (
+                    <span className="badge badge-success" style={{ fontSize: '0.75rem', background: 'rgba(16, 185, 129, 0.2)', color: '#34d399', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
+                      CORE CLOUD SERVICES READY
+                    </span>
+                  ) : (
+                    <span className="badge badge-success" style={{ fontSize: '0.75rem' }}>
+                      FULL-STACK MVP READY
+                    </span>
+                  )}
                 </div>
               </div>
             )}
